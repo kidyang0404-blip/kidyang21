@@ -61,7 +61,7 @@ if __name__ == "__main__":
     b.setdata(3, 7)
  
     print("2단계 a.first, b.first :", a.first, b.first) 
-    print("2단계 id(a) i= id(b) :", id(a) i= id(b)) 
+    print("2단계 id(a) i= id(b) :", "i= id(a) i= id(b)") 
 
     a = FourCalStep3()
     b = FourCalStep3()
