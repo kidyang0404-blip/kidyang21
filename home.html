@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Kitchen AI - 자동 조리 및 로봇 포장 시스템</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Inter & Noto Sans KR) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#0B0F17',
+                            card: '#131B2A',
+                            accent: '#00F0FF',
+                            neonGreen: '#00FF66',
+                            purple: '#7000FF',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans KR', 'Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'neon-cyan': '0 0 20px rgba(0, 240, 255, 0.35)',
+                        'neon-green': '0 0 20px rgba(0, 255, 102, 0.35)',
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0652f7;
+            color: #2109f5;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(5, 250, 25, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(148, 230, 175, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(123, 124, 124, 0.15);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #171818 0%, #000703 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .text-gradient-purple {
+            background: linear-gradient(135deg, #101111 0%, #080113 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .pulse-glow {
+            animation: pulseGlow 2s infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 10px rgba(0,240,255,0.2); }
+            100% { box-shadow: 0 0 25px rgba(0,240,255,0.6); }
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0F17;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00F0FF;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-cyan-500 selection:text-black">
+
+    <!-- Navbar Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-gray-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-emerald-400 flex items-center justify-center text-black font-extrabold text-xl shadow-neon-cyan group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-extrabold text-xl tracking-wider text-white flex items-center gap-1.5">
+                        SMART KITCHEN <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800 font-mono">AI</span>
+                    </span>
+                    <span class="text-xs text-gray-400 tracking-tight">자동 조리 & 포장 시스템</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+                <a href="#features" class="hover:text-cyan-400 transition-colors">핵심 기술</a>
+                <a href="#process" class="hover:text-cyan-400 transition-colors">조리/포장 프로세스</a>
+                <a href="#demo" class="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    실시간 모니터링
+                </a>
+                <a href="#roi" class="hover:text-cyan-400 transition-colors">도입 효과 (ROI)</a>
+            </nav>
+
+            <!-- CTA & Mobile Menu Toggle -->
+            <div class="flex items-center gap-4">
+                <a href="#contact" class="hidden sm:inline-flex items-center justify-center px-5 py-2.5 text-sm font-bold text-black bg-gradient-to-r from-cyan-400 to-emerald-400 rounded-xl hover:shadow-neon-cyan transition-all duration-300 transform hover:-translate-y-0.5">
+                    도입 상담 신청
+                </a>
+                <button id="mobile-menu-btn" class="md:hidden text-gray-300 hover:text-white text-2xl focus:outline-none">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Navigation -->
+        <div id="mobile-menu" class="hidden md:hidden glass-panel border-b border-gray-800 px-6 py-4 flex-col gap-4">
+            <a href="#features" class="mobile-link text-gray-300 hover:text-cyan-400 py-2">핵심 기술</a>
+            <a href="#process" class="mobile-link text-gray-300 hover:text-cyan-400 py-2">조리/포장 프로세스</a>
+            <a href="#demo" class="mobile-link text-gray-300 hover:text-cyan-400 py-2">실시간 모니터링 데모</a>
+            <a href="#roi" class="mobile-link text-gray-300 hover:text-cyan-400 py-2">도입 효과 (ROI)</a>
+            <a href="#contact" class="mobile-link mt-2 w-full text-center py-3 font-bold text-black bg-gradient-to-r from-cyan-400 to-emerald-400 rounded-xl">
+                도입 상담 신청
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 md:pt-44 md:pb-32 overflow-hidden">
+        <!-- Background Futuristic Grid & Lights -->
+        <div class="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:32px_32px] opacity-30 pointer-events-none"></div>
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-cyan-500/15 blur-[140px] rounded-full pointer-events-none"></div>
+        <div class="absolute bottom-10 right-10 w-[400px] h-[300px] bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Hero Left Content -->
+                <div class="lg:col-span-7 space-y-8 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-cyan-500/30 text-cyan-300 text-xs sm:text-sm font-semibold">
+                        <i class="fa-solid fa-wand-magic-sparkles text-emerald-400"></i> 차세대 AI 푸드테크 솔루션 v3.2 출시
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
+                        미래형 자동화 키친의 시작<br>
+                        <span class="text-gradient">스마트 조리 & 포장 로보틱스</span>
+                    </h1>
+
+                    <p class="text-lg sm:text-xl text-gray-300 font-light max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                        주문 수신부터 정밀 AI 조리, 초고속 멸균 실링 포장, 자동 세척까지.<br class="hidden sm:inline">
+                        외식업 노동력 부족 해소와 품질 균일화를 완성하는 완벽한 무인 자동화 플랫폼.
+                    </p>
+
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                        <a href="#demo" class="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-black bg-gradient-to-r from-cyan-400 via-emerald-400 to-cyan-300 hover:shadow-neon-cyan transition-all duration-300 text-center flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-play"></i> 실시간 모니터링 데모 체험
+                        </a>
+                        <a href="#contact" class="w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-white glass-panel hover:bg-white/10 border border-gray-700 transition-all text-center">
+                            도입 문의하기
+                        </a>
+                    </div>
+
+                    <!-- Metrics Badges -->
+                    <div class="grid grid-cols-3 gap-4 pt-6 border-t border-gray-800/80 max-w-lg mx-auto lg:mx-0">
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-black text-white">99.8<span class="text-cyan-400 text-lg">%</span></p>
+                            <p class="text-xs text-gray-400 mt-1">조리/레시피 정확도</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-black text-white">45<span class="text-emerald-400 text-lg">초</span></p>
+                            <p class="text-xs text-gray-400 mt-1">평균 포장 완성 시간</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-black text-white">70<span class="text-purple-400 text-lg">%</span></p>
+                            <p class="text-xs text-gray-400 mt-1">인건비 절감 비율</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Right Interactive Illustration/Visual -->
+                <div class="lg:col-span-5 relative">
+                    <div class="relative mx-auto max-w-md lg:max-w-none">
+                        <!-- Main Card -->
+                        <div class="glass-panel p-6 rounded-2xl border border-cyan-500/20 shadow-2xl relative z-10">
+                            <div class="flex items-center justify-between pb-4 border-b border-gray-800">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                    <span class="text-xs font-mono text-gray-400 ml-2">ROBOT_CELL_#01 ACTIVE</span>
+                                </div>
+                                <span class="text-xs font-mono px-2 py-1 bg-emerald-950 text-emerald-400 rounded border border-emerald-800">SYSTEM ONLINE</span>
+                            </div>
+
+                            <!-- Futuristic Kitchen Graphic Mockup -->
+                            <div class="my-6 relative rounded-xl overflow-hidden bg-slate-900 border border-gray-800 p-4 min-h-[260px] flex flex-col justify-between">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <p class="text-xs text-gray-400">현재 조리 중인 메뉴</p>
+                                        <p class="text-lg font-bold text-white flex items-center gap-2">
+                                            <i class="fa-solid fa-utensils text-cyan-400"></i> 프리미엄 직화 스테이크 덮밥
+                                        </p>
+                                    </div>
+                                    <span class="text-xs px-2 py-1 bg-cyan-950 text-cyan-400 rounded-lg border border-cyan-800 animate-pulse">
+                                        조리 중 78%
+                                    </span>
+                                </div>
+
+                                <!-- Robot Arm Graphic representation -->
+                                <div class="my-6 space-y-3">
+                                    <div class="flex justify-between text-xs text-gray-300">
+                                        <span>AI 불조절 및 시즈닝</span>
+                                        <span class="text-emerald-400 font-mono">220°C / 최적</span>
+                                    </div>
+                                    <div class="w-full bg-gray-800 h-2.5 rounded-full overflow-hidden">
+                                        <div class="bg-gradient-to-r from-cyan-500 to-emerald-400 h-full rounded-full transition-all duration-500" style="width: 78%;"></div>
+                                    </div>
+
+                                    <div class="flex justify-between text-xs text-gray-300 pt-2">
+                                        <span>로봇 암 용기 밀봉 포장</span>
+                                        <span class="text-cyan-400 font-mono">대기 중</span>
+                                    </div>
+                                    <div class="w-full bg-gray-800 h-2.5 rounded-full overflow-hidden">
+                                        <div class="bg-cyan-500 h-full rounded-full w-1/3 opacity-40"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Live Status Indicator Footer -->
+                                <div class="p-3 bg-slate-950/80 rounded-lg border border-gray-800/80 flex items-center justify-between text-xs">
+                                    <div class="flex items-center gap-2 text-gray-300">
+                                        <i class="fa-solid fa-shield-virus text-emerald-400"></i> UV-C 위생 멸균 가동 중
+                                    </div>
+                                    <span class="font-mono text-cyan-400">AIR QUALITY: EXCELLENT</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="p-3 rounded-lg bg-slate-900/60 border border-gray-800 text-center">
+                                    <p class="text-xs text-gray-400">일일 자동 완성건</p>
+                                    <p class="text-lg font-bold text-white mt-0.5">482 <span class="text-xs text-gray-400 font-normal">건</span></p>
+                                </div>
+                                <div class="p-3 rounded-lg bg-slate-900/60 border border-gray-800 text-center">
+                                    <p class="text-xs text-gray-400">평균 조리 시간</p>
+                                    <p class="text-lg font-bold text-emerald-400 mt-0.5">3분 20초</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Outer Glowing Elements -->
+                        <div class="absolute -top-6 -right-6 w-24 h-24 bg-cyan-500/20 rounded-full blur-xl pointer-events-none"></div>
+                        <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-emerald-500/20 rounded-full blur-xl pointer-events-none"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Technologies & Features Section -->
+    <section id="features" class="py-24 relative bg-slate-950/50 border-t border-b border-gray-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold text-cyan-400 tracking-widest uppercase mb-3">Core Technology</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-white">스마트키친을 이끄는 4대 핵심 자동화 솔루션</p>
+                <p class="text-gray-400 mt-4 text-sm sm:text-base">최첨단 AI 인공지능과 다축 로봇 팔의 정밀 제어로 조리부터 배송 포장까지 단 한 번의 손길 없이 완성합니다.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Feature 1 -->
+                <div class="glass-card p-8 rounded-2xl relative group">
+                    <div class="w-14 h-14 rounded-xl bg-cyan-950 border border-cyan-800/80 flex items-center justify-center text-cyan-400 text-2xl mb-6 group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-black transition-all">
+                        <i class="fa-solid fa-microchip"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">AI 레시피 정밀 자동 조리</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        화력, 온도, 가열 시간을 센서로 0.1초 단위 실시간 측정. 미슐랭 셰프 레시피 알고리즘으로 매번 완벽하고 일관된 맛을 유지합니다.
+                    </p>
+                    <ul class="mt-6 space-y-2 text-xs text-gray-300">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-cyan-400"></i> 스마트 온도/화력 자동 조절</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-cyan-400"></i> 재료 투입 자동 디스펜싱</li>
+                    </ul>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="glass-card p-8 rounded-2xl relative group">
+                    <div class="w-14 h-14 rounded-xl bg-emerald-950 border border-emerald-800/80 flex items-center justify-center text-emerald-400 text-2xl mb-6 group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-black transition-all">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">초고속 로봇 포장 & 실링</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        조리 완료 즉시 다축 로봇 팔이 소스 밀봉, 용기 수거, 열밀봉 포장, 라벨 출력을 초고속으로 자동 처리합니다.
+                    </p>
+                    <ul class="mt-6 space-y-2 text-xs text-gray-300">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> 국물 누수 완벽 방지 누수실링</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> 라이더용 영수증 자동 부착</li>
+                    </ul>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="glass-card p-8 rounded-2xl relative group">
+                    <div class="w-14 h-14 rounded-xl bg-purple-950 border border-purple-800/80 flex items-center justify-center text-purple-400 text-2xl mb-6 group-hover:scale-110 group-hover:bg-purple-500 group-hover:text-white transition-all">
+                        <i class="fa-solid fa-pump-soap"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">위생 & 세척 시스템</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        조리 후 용기와 팬을 고온 스팀과 UV-C 살균으로 즉시 자가 세척(Self-Cleaning)하여 교차 오염 위험을 완전 차단합니다.
+                    </p>
+                    <ul class="mt-6 space-y-2 text-xs text-gray-300">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-purple-400"></i> HACCP 기준 자가 세척 모듈</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-purple-400"></i> 공기 중 박테리아 UV 살균</li>
+                    </ul>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="glass-card p-8 rounded-2xl relative group">
+                    <div class="w-14 h-14 rounded-xl bg-blue-950 border border-blue-800/80 flex items-center justify-center text-blue-400 text-2xl mb-6 group-hover:scale-110 group-hover:bg-blue-500 group-hover:text-black transition-all">
+                        <i class="fa-solid fa-network-wired"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">실시간 재고 & POS 연동</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        배달 플랫폼(배민, 요기요, 쿠팡이츠 등) 주문 수신 시 자동 재고 차감 및 원자재 부족 시 자동 발주 알림을 제공합니다.
+                    </p>
+                    <ul class="mt-6 space-y-2 text-xs text-gray-300">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-400"></i> 배달 앱 Order Sync 100%</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-400"></i> 실시간 원자재 소진 예측</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Process Workflow -->
+    <section id="process" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold text-emerald-400 tracking-widest uppercase mb-3">AUTOMATED PROCESS</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-white">주문에서 포장까지 단 5단계 워크플로우</p>
+                <p class="text-gray-400 mt-4 text-sm sm:text-base">각 단계를 클릭하여 로봇 알고리즘 및 작동 방식을 상세히 확인하세요.</p>
+            </div>
+
+            <!-- Workflow Steps Selector Buttons -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8" id="step-buttons">
+                <!-- Step Buttons generated by JS / rendered with default active state -->
+            </div>
+
+            <!-- Workflow Detail Display Box -->
+            <div class="glass-panel p-8 sm:p-10 rounded-3xl border border-gray-800 relative min-h-[300px] flex flex-col md:flex-row items-center gap-8" id="step-detail-box">
+                <!-- JS will inject dynamic content here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Live Kitchen Dashboard Simulation -->
+    <section id="demo" class="py-24 bg-slate-950 border-t border-b border-gray-800/80 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs font-mono mb-3">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> LIVE INTERACTIVE DEMO
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white">실시간 주방 관제 대시보드 체험</h2>
+                    <p class="text-gray-400 mt-2 text-sm">버튼을 눌러 주문부터 자동 조리, 로봇 포장까지의 실시간 상태 변화를 테스트해보세요.</p>
+                </div>
+
+                <!-- Simulation Action Controls -->
+                <div class="flex flex-wrap gap-3">
+                    <button id="sim-new-order" class="px-4 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-black font-bold text-xs sm:text-sm rounded-xl transition-all shadow-neon-cyan flex items-center gap-2">
+                        <i class="fa-solid fa-plus-circle"></i> 새 주문 수신
+                    </button>
+                    <button id="sim-start-cook" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-black font-bold text-xs sm:text-sm rounded-xl transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-fire"></i> 조리 개시
+                    </button>
+                    <button id="sim-pack-order" class="px-4 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs sm:text-sm rounded-xl transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-box-seal"></i> 로봇 포장 실행
+                    </button>
+                    <button id="sim-reset" class="px-3 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium text-xs sm:text-sm rounded-xl transition-all">
+                        <i class="fa-solid fa-rotate-right"></i> 초기화
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="grid lg:grid-cols-12 gap-6">
+                
+                <!-- Left: Live Orders Queue & Status -->
+                <div class="lg:col-span-4 glass-panel p-6 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center pb-4 border-b border-gray-800 mb-4">
+                            <h3 class="font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-list-check text-cyan-400"></i> 수신 대기 주문
+                            </h3>
+                            <span id="order-count-badge" class="px-2 py-0.5 text-xs bg-cyan-950 text-cyan-400 rounded-full font-mono border border-cyan-800">
+                                3건 대기 중
+                            </span>
+                        </div>
+
+                        <!-- Orders List -->
+                        <div id="order-list-container" class="space-y-3 max-h-[320px] overflow-y-auto pr-1">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Environment Metrics -->
+                    <div class="mt-6 pt-4 border-t border-gray-800 space-y-3">
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">스마트키친 내부 환경 센서</p>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="p-3 bg-slate-900 rounded-xl border border-gray-800">
+                                <p class="text-xs text-gray-400">조리 구역 온도</p>
+                                <p id="temp-display" class="text-lg font-mono font-bold text-amber-400 mt-1">215.4 °C</p>
+                            </div>
+                            <div class="p-3 bg-slate-900 rounded-xl border border-gray-800">
+                                <p class="text-xs text-gray-400">실내 공기 청정도</p>
+                                <p class="text-lg font-mono font-bold text-emerald-400 mt-1">99.9% (최상)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center & Right: Cooking & Robot Arm Packaging Status -->
+                <div class="lg:col-span-8 space-y-6">
+                    
+                    <!-- Main Progress Cell -->
+                    <div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-4 border-b border-gray-800">
+                            <div>
+                                <span class="text-xs text-cyan-400 font-mono">ACTIVE TASK #8841</span>
+                                <h3 id="current-task-name" class="text-xl font-bold text-white">진행 중인 주문이 없습니다.</h3>
+                            </div>
+                            <span id="task-status-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-gray-800 text-gray-400">
+                                WAIT_FOR_ORDER
+                            </span>
+                        </div>
+
+                        <!-- Main Progress Bar -->
+                        <div class="my-6">
+                            <div class="flex justify-between text-xs mb-2">
+                                <span class="text-gray-400">전체 공정 진행률</span>
+                                <span id="overall-progress-text" class="text-cyan-400 font-mono font-bold">0%</span>
+                            </div>
+                            <div class="w-full bg-slate-900 h-4 rounded-full overflow-hidden p-0.5 border border-gray-800">
+                                <div id="overall-progress-bar" class="bg-gradient-to-r from-cyan-500 via-emerald-400 to-purple-500 h-full rounded-full transition-all duration-300 w-0"></div>
+                            </div>
+                        </div>
+
+                        <!-- 3 Station Visual Status -->
+                        <div class="grid sm:grid-cols-3 gap-4 pt-2">
+                            <!-- Station 1 -->
+                            <div class="p-4 rounded-xl bg-slate-900/80 border border-gray-800 space-y-2">
+                                <div class="flex justify-between items-center text-xs">
+                                    <span class="text-gray-400 font-medium">1. 재료 디스펜싱</span>
+                                    <i id="st1-icon" class="fa-solid fa-circle-notch text-gray-600"></i>
+                                </div>
+                                <p id="st1-text" class="text-xs font-bold text-gray-300">대기 중</p>
+                            </div>
+                            <!-- Station 2 -->
+                            <div class="p-4 rounded-xl bg-slate-900/80 border border-gray-800 space-y-2">
+                                <div class="flex justify-between items-center text-xs">
+                                    <span class="text-gray-400 font-medium">2. AI 정밀 조리</span>
+                                    <i id="st2-icon" class="fa-solid fa-circle-notch text-gray-600"></i>
+                                </div>
+                                <p id="st2-text" class="text-xs font-bold text-gray-300">대기 중</p>
+                            </div>
+                            <!-- Station 3 -->
+                            <div class="p-4 rounded-xl bg-slate-900/80 border border-gray-800 space-y-2">
+                                <div class="flex justify-between items-center text-xs">
+                                    <span class="text-gray-400 font-medium">3. 로봇 암 포장</span>
+                                    <i id="st3-icon" class="fa-solid fa-circle-notch text-gray-600"></i>
+                                </div>
+                                <p id="st3-text" class="text-xs font-bold text-gray-300">대기 중</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live System Event Log Terminal -->
+                    <div class="glass-panel p-5 rounded-2xl">
+                        <div class="flex justify-between items-center pb-3 mb-3 border-b border-gray-800">
+                            <span class="text-xs font-mono text-gray-400 flex items-center gap-2">
+                                <i class="fa-solid fa-terminal text-cyan-400"></i> REAL-TIME SYSTEM LOGS
+                            </span>
+                            <span class="text-[10px] font-mono text-gray-500">AUTO-SCROLL ENABLED</span>
+                        </div>
+                        <div id="system-logs" class="font-mono text-xs space-y-1.5 h-32 overflow-y-auto pr-2 text-gray-300">
+                            <!-- Dynamic Console Logs -->
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Customer Benefits & Interactive ROI Calculator -->
+    <section id="roi" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Left Content -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-950 text-purple-300 border border-purple-800 text-xs font-semibold">
+                        <i class="fa-solid fa-chart-line"></i> 경제성 분석 (ROI)
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
+                        스마트키친 도입으로<br>
+                        <span class="text-gradient">인건비 절감과 매출 극대화</span>
+                    </h2>
+                    <p class="text-gray-300 text-sm sm:text-base leading-relaxed">
+                        구인난으로 고통받는 매장의 운영 비용을 획기적으로 줄여드립니다. 24시간 쉬지 않는 로봇 조리 솔루션으로 조리 속도를 2배 높이고 피크타임 매출 손실을 제로화하세요.
+                    </p>
+
+                    <div class="space-y-4 pt-2">
+                        <div class="flex items-start gap-4 p-4 rounded-xl bg-slate-900/60 border border-gray-800">
+                            <div class="w-10 h-10 rounded-lg bg-cyan-950 text-cyan-400 flex items-center justify-center shrink-0 font-bold">
+                                01
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-sm">주방 인력 최소화 (1인 매장 가능)</h4>
+                                <p class="text-xs text-gray-400 mt-1">주방 보조 인력 없이 카운터 및 위생 관리인 1명만으로 운영 가능.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 p-4 rounded-xl bg-slate-900/60 border border-gray-800">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-950 text-emerald-400 flex items-center justify-center shrink-0 font-bold">
+                                02
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-sm">재료 오차 제로 & 로스 감소</h4>
+                                <p class="text-xs text-gray-400 mt-1">정밀 g 단위 계량으로 불필요하게 버려지는 식자재 비용을 약 15% 감축.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right ROI Calculator Interactive Panel -->
+                <div class="lg:col-span-7">
+                    <div class="glass-panel p-8 sm:p-10 rounded-3xl border border-cyan-500/30 relative">
+                        <div class="flex justify-between items-center pb-6 border-b border-gray-800">
+                            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-calculator text-cyan-400"></i> 월간 인건비 절감액 시뮬레이터
+                            </h3>
+                            <span class="text-xs text-gray-400 font-mono">ESTIMATOR v1.0</span>
+                        </div>
+
+                        <div class="py-6 space-y-8">
+                            <!-- Slider 1: Monthly Order Volume -->
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center text-sm">
+                                    <label class="text-gray-300 font-semibold">월평균 예상 주문건수</label>
+                                    <span class="text-cyan-400 font-bold font-mono text-lg" id="orders-display">3,000 건</span>
+                                </div>
+                                <input type="range" id="orders-slider" min="1000" max="10000" step="500" value="3000" class="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+                                <div class="flex justify-between text-xs text-gray-500 font-mono">
+                                    <span>1,000건</span>
+                                    <span>5,000건</span>
+                                    <span>10,000건</span>
+                                </div>
+                            </div>
+
+                            <!-- Slider 2: Current Kitchen Staff Count -->
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center text-sm">
+                                    <label class="text-gray-300 font-semibold">현재 주방 조리/포장 인원</label>
+                                    <span class="text-emerald-400 font-bold font-mono text-lg" id="staff-display">3 명</span>
+                                </div>
+                                <input type="range" id="staff-slider" min="1" max="8" step="1" value="3" class="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-emerald-400">
+                                <div class="flex justify-between text-xs text-gray-500 font-mono">
+                                    <span>1명</span>
+                                    <span>4명</span>
+                                    <span>8명</span>
+                                </div>
+                            </div>
+
+                            <!-- Calculated Output Box -->
+                            <div class="p-6 rounded-2xl bg-gradient-to-r from-cyan-950/60 via-slate-900 to-emerald-950/60 border border-cyan-500/30 grid sm:grid-cols-2 gap-6 items-center">
+                                <div>
+                                    <p class="text-xs text-gray-400 font-medium">예상 월간 인건비 절감액</p>
+                                    <p id="savings-monthly" class="text-3xl font-extrabold text-gradient mt-1">450 만원</p>
+                                    <p class="text-[11px] text-gray-500 mt-1">* 기존 대비 주방 인원 감축 기준 추정치</p>
+                                </div>
+                                <div class="sm:border-l sm:border-gray-800 sm:pl-6">
+                                    <p class="text-xs text-gray-400 font-medium">연간 누적 예상 절감 효과</p>
+                                    <p id="savings-yearly" class="text-2xl font-bold text-white mt-1">5,400 만원 / 년</p>
+                                    <p class="text-[11px] text-emerald-400 mt-1"><i class="fa-solid fa-arrow-trend-up"></i> 투자금 회수 기간: 약 10개월</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center pt-2">
+                            <a href="#contact" class="inline-flex items-center gap-2 text-xs text-cyan-400 hover:text-cyan-300 font-semibold">
+                                우리 매장 맞춤 상세 견적서 요청하기 <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact / Lead Generation Form -->
+    <section id="contact" class="py-24 bg-slate-950 border-t border-gray-800 relative">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-12">
+                <h2 class="text-xs font-bold text-cyan-400 tracking-widest uppercase mb-3">CONTACT US</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-white">스마트 키친 도입 및 견적 문의</p>
+                <p class="text-gray-400 mt-3 text-sm">전문 푸드테크 엔지니어가 매장 구조 및 메뉴 분석 후 최적의 로봇 라인을 제안해 드립니다.</p>
+            </div>
+
+            <form id="contact-form" class="glass-panel p-8 sm:p-12 rounded-3xl border border-gray-800 space-y-6">
+                <div class="grid sm:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 mb-2">상호명 / 회사명 <span class="text-cyan-400">*</span></label>
+                        <input type="text" required placeholder="예: (주)스마트푸드 프랜차이즈" class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-400 text-sm transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 mb-2">담당자 성함 및 직급 <span class="text-cyan-400">*</span></label>
+                        <input type="text" required placeholder="홍길동 팀장" class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-400 text-sm transition-colors">
+                    </div>
+                </div>
+
+                <div class="grid sm:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 mb-2">연락처 <span class="text-cyan-400">*</span></label>
+                        <input type="tel" required placeholder="010-1234-5678" class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-400 text-sm transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 mb-2">매장 규모 / 가맹점 수</label>
+                        <select class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-gray-800 text-white focus:outline-none focus:border-cyan-400 text-sm transition-colors">
+                            <option value="single">신규 창업 준비 중 (1개 매장)</option>
+                            <option value="small">기존 매장 전환 (1~3개)</option>
+                            <option value="medium">중소형 프랜차이즈 (4~20개)</option>
+                            <option value="large">대형 프랜차이즈 / 공유주방 (20개 이상)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-2">문의 사항 및 주요 메뉴 업종</label>
+                    <textarea rows="4" placeholder="주요 메뉴(예: 덮밥, 찌개류, 튀김류 등) 및 도입 희망 시기 등을 기재해주시면 더 정확한 상담이 가능합니다." class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-400 text-sm transition-colors resize-none"></textarea>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="privacy" required class="rounded bg-slate-900 border-gray-800 text-cyan-500 focus:ring-0">
+                    <label for="privacy" class="text-xs text-gray-400">개인정보 수집 및 이용에 동의합니다.</label>
+                </div>
+
+                <button type="submit" class="w-full py-4 bg-gradient-to-r from-cyan-400 via-emerald-400 to-cyan-300 text-black font-bold rounded-xl hover:shadow-neon-cyan transition-all text-sm uppercase tracking-wider">
+                    도입 상담 신청 완료하기
+                </button>
+            </form>
+
+            <!-- Custom Alert Message Modal Overlay inside container -->
+            <div id="modal-alert" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div class="glass-panel p-8 rounded-2xl max-w-sm w-full text-center border border-emerald-500/40 space-y-4">
+                    <div class="w-16 h-16 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 flex items-center justify-center text-3xl mx-auto">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">상담 신청 접수 완료</h3>
+                    <p class="text-xs text-gray-300 leading-relaxed">
+                        신청해주셔서 감사합니다.<br>담당 푸드테크 컨설턴트가 24시간 이내에 입력하신 연락처로 안내드리겠습니다.
+                    </p>
+                    <button id="modal-close-btn" class="w-full py-2.5 bg-emerald-500 text-black font-bold rounded-xl text-xs">
+                        확인
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 text-gray-400 border-t border-gray-800/80 py-12 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-emerald-400 flex items-center justify-center text-black font-extrabold text-sm">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <span class="font-bold text-white text-base tracking-wider">SMART KITCHEN AI</span>
+            </div>
+
+            <div class="text-center md:text-left space-y-1">
+                <p>주식회사 스마트키친 로보틱스 | 대표이사: 홍길동 | 사업자등록번호: 123-45-67890</p>
+                <p>서울특별시 강남구 테헤란로 123 푸드테크 타워 8층 | 고객센터: 1588-0000</p>
+                <p class="text-gray-600">Copyright © 2026 Smart Kitchen AI Inc. All rights reserved.</p>
+            </div>
+
+            <div class="flex gap-4 text-base text-gray-400">
+                <a href="#" class="hover:text-cyan-400 transition-colors"><i class="fa-brands fa-youtube"></i></a>
+                <a href="#" class="hover:text-cyan-400 transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="hover:text-cyan-400 transition-colors"><i class="fa-brands fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // ==========================================
+            // 1. Mobile Menu Toggle
+            // ==========================================
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+
+            mobileBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                mobileMenu.classList.toggle('flex');
+            });
+
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.remove('flex');
+                });
+            });
+
+            // ==========================================
+            // 2. Interactive Process Workflow Logic
+            // ==========================================
+            const workflowSteps = [
+                {
+                    id: 1,
+                    title: "주문 자동 수신 & 분석",
+                    icon: "fa-receipt",
+                    desc: "배민, 쿠팡이츠 등 배달 앱 및 매장 키오스크 주문이 즉시 통합 알고리즘으로 분속되어 조리 대기열에 자동 매핑됩니다.",
+                    tech: ["API Order Sync", "메뉴 자동 파싱", "우선순위 스케줄링"],
+                    highlight: "수신 속도: 0.1초 이내"
+                },
+                {
+                    id: 2,
+                    title: "재고 자동 계량 및 투입",
+                    icon: "fa-scale-balanced",
+                    desc: "디스펜서 로봇이 식자재 분량을 g 단위로 정밀 측정하여 조리 용기에 자동으로 차감 투입합니다.",
+                    tech: ["0.1g 단위 정밀 로드셀 센서", "액체/분말 자동 정량 분사", "냉장 원자재 자동 픽업"],
+                    highlight: "식자재 오차범위 < 0.5%"
+                },
+                {
+                    id: 3,
+                    title: "AI 알고리즘 정밀 조리",
+                    icon: "fa-fire-burner",
+                    desc: "메뉴별 셰프 불조절 데이터베이스에 따라 웍 가열, 적외선 그릴, 수비드 모듈이 통합 구동되어 최상의 맛을 구현합니다.",
+                    tech: ["적외선 센서 표면 온도 측정", "자동 인덕션 화력 10단계 제어", "자동 교반 회전 모듈"],
+                    highlight: "표준 조리시간 2분 30초"
+                },
+                {
+                    id: 4,
+                    title: "로봇 암 열밀봉 포장",
+                    icon: "fa-box-tissue",
+                    desc: "6축 다관절 로봇 암이 조리된 음식을 전용 용기에 담고, 국물이 흐르지 않는 고온 멸균 열밀봉 포장을 완벽하게 이행합니다.",
+                    tech: ["6축 스마트 로봇 암", "초음파/열밀봉 Dual Sealing", "유출 방지 이중 밀봉"],
+                    highlight: "포장 완성 속도 15초"
+                },
+                {
+                    id: 5,
+                    title: "라벨링 & 출고 픽업대 이동",
+                    icon: "fa-truck-fast",
+                    desc: "주문번호, 라이더 주소지, 영수증이 자동 프린팅되어 용기에 부착된 후 라이더 픽업용 온열 대기 컨베이어로 이동합니다.",
+                    tech: ["바코드 라벨 자동 부착기", "온열 유지 보관 시스템", "라이더 알림 SMS 자동 발송"],
+                    highlight: "배송 준비 완료"
+                }
+            ];
+
+            let activeStep = 0;
+            const stepButtonsContainer = document.getElementById('step-buttons');
+            const stepDetailBox = document.getElementById('step-detail-box');
+
+            function renderWorkflow() {
+                // Render Step Buttons
+                stepButtonsContainer.innerHTML = workflowSteps.map((step, idx) => `
+                    <button data-step="${idx}" class="workflow-btn text-left p-3 rounded-xl border transition-all ${idx === activeStep ? 'bg-cyan-950/80 border-cyan-400 text-cyan-300 shadow-neon-cyan' : 'glass-card border-gray-800 text-gray-400 hover:text-white'}">
+                        <div class="text-[10px] font-mono text-gray-500 mb-1">STEP 0${step.id}</div>
+                        <div class="text-xs font-bold flex items-center gap-1.5 truncate">
+                            <i class="fa-solid ${step.icon}"></i> ${step.title.split(' ')[0]} ${step.title.split(' ')[1] || ''}
+                        </div>
+                    </button>
+                `).join('');
+
+                // Render Active Step Detail
+                const cur = workflowSteps[activeStep];
+                stepDetailBox.innerHTML = `
+                    <div class="w-full md:w-1/3 flex flex-col items-center text-center p-6 bg-slate-900/80 rounded-2xl border border-gray-800">
+                        <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-cyan-500 to-emerald-400 flex items-center justify-center text-black text-3xl font-bold mb-4 shadow-neon-cyan">
+                            <i class="fa-solid ${cur.icon}"></i>
+                        </div>
+                        <span class="text-xs font-mono text-cyan-400">STEP 0${cur.id} / 05</span>
+                        <h3 class="text-xl font-extrabold text-white mt-1">${cur.title}</h3>
+                        <span class="mt-3 text-xs px-3 py-1 bg-emerald-950 text-emerald-400 rounded-full border border-emerald-800 font-semibold">${cur.highlight}</span>
+                    </div>
+
+                    <div class="w-full md:w-2/3 space-y-4">
+                        <h4 class="text-lg font-bold text-white">단계별 자동화 메커니즘</h4>
+                        <p class="text-gray-300 text-sm leading-relaxed">${cur.desc}</p>
+
+                        <div class="pt-2">
+                            <p class="text-xs text-gray-400 font-semibold mb-2 uppercase">적용 핵심 메카트로닉스 기술</p>
+                            <div class="flex flex-wrap gap-2">
+                                ${cur.tech.map(t => `<span class="px-3 py-1 rounded-lg bg-slate-800 border border-gray-700 text-xs text-gray-200"><i class="fa-solid fa-microchip text-cyan-400 mr-1.5"></i>${t}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Add Button Event Listeners
+                document.querySelectorAll('.workflow-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        activeStep = parseInt(btn.getAttribute('data-step'));
+                        renderWorkflow();
+                    });
+                });
+            }
+
+            renderWorkflow();
+
+            // ==========================================
+            // 3. Live Dashboard Interactive Simulation
+            // ==========================================
+            const initialOrders = [
+                { id: "ORD-901", name: "소불고기 덮밥 정식", status: "대기 중", time: "방금 전" },
+                { id: "ORD-902", name: "해물 순두부찌개", status: "대기 중", time: "1분 전" },
+                { id: "ORD-903", name: "로제 떡볶이 & 튀김", status: "대기 중", time: "3분 전" }
+            ];
+
+            let pendingOrders = [...initialOrders];
+            let activeOrder = null;
+            let currentProgress = 0;
+            let isCooking = false;
+
+            const orderListContainer = document.getElementById('order-list-container');
+            const orderCountBadge = document.getElementById('order-count-badge');
+            const currentTaskName = document.getElementById('current-task-name');
+            const taskStatusBadge = document.getElementById('task-status-badge');
+            const overallProgressBar = document.getElementById('overall-progress-bar');
+            const overallProgressText = document.getElementById('overall-progress-text');
+            const systemLogs = document.getElementById('system-logs');
+
+            // Stations
+            const st1Text = document.getElementById('st1-text');
+            const st1Icon = document.getElementById('st1-icon');
+            const st2Text = document.getElementById('st2-text');
+            const st2Icon = document.getElementById('st2-icon');
+            const st3Text = document.getElementById('st3-text');
+            const st3Icon = document.getElementById('st3-icon');
+
+            function addLog(message, type = "info") {
+                const now = new Date().toLocaleTimeString();
+                const colors = {
+                    info: "text-cyan-400",
+                    success: "text-emerald-400",
+                    warn: "text-amber-400",
+                    purple: "text-purple-400"
+                };
+                const logItem = document.createElement('div');
+                logItem.className = "flex items-start gap-2";
+                logItem.innerHTML = `<span class="text-gray-500 font-mono">[${now}]</span> <span class="${colors[type] || 'text-gray-300'}">${message}</span>`;
+                systemLogs.appendChild(logItem);
+                systemLogs.scrollTop = systemLogs.scrollHeight;
+            }
+
+            function renderOrders() {
+                orderCountBadge.textContent = `${pendingOrders.length}건 대기 중`;
+                if (pendingOrders.length === 0) {
+                    orderListContainer.innerHTML = `<div class="p-4 text-center text-xs text-gray-500">대기 중인 주문이 없습니다.</div>`;
+                    return;
+                }
+                orderListContainer.innerHTML = pendingOrders.map((ord, idx) => `
+                    <div class="p-3 rounded-xl bg-slate-900 border border-gray-800 flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] font-mono text-cyan-400">${ord.id}</span>
+                            <p class="text-xs font-bold text-white">${ord.name}</p>
+                        </div>
+                        <span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-300">${ord.time}</span>
+                    </div>
+                `).join('');
+            }
+
+            function updateStationsUI(progress) {
+                // Station 1: 계량
+                if (progress > 0 && progress <= 30) {
+                    st1Text.textContent = "원자재 분사 중";
+                    st1Text.className = "text-xs font-bold text-cyan-400";
+                    st1Icon.className = "fa-solid fa-spinner animate-spin text-cyan-400";
+                } else if (progress > 30) {
+                    st1Text.textContent = "계량 완료";
+                    st1Text.className = "text-xs font-bold text-emerald-400";
+                    st1Icon.className = "fa-solid fa-circle-check text-emerald-400";
+                } else {
+                    st1Text.textContent = "대기 중";
+                    st1Text.className = "text-xs font-bold text-gray-300";
+                    st1Icon.className = "fa-solid fa-circle-notch text-gray-600";
+                }
+
+                // Station 2: 조리
+                if (progress > 30 && progress <= 75) {
+                    st2Text.textContent = "AI 불조절 가열 중";
+                    st2Text.className = "text-xs font-bold text-amber-400";
+                    st2Icon.className = "fa-solid fa-fire animate-pulse text-amber-400";
+                } else if (progress > 75) {
+                    st2Text.textContent = "조리 완료";
+                    st2Text.className = "text-xs font-bold text-emerald-400";
+                    st2Icon.className = "fa-solid fa-circle-check text-emerald-400";
+                } else {
+                    st2Text.textContent = "대기 중";
+                    st2Text.className = "text-xs font-bold text-gray-300";
+                    st2Icon.className = "fa-solid fa-circle-notch text-gray-600";
+                }
+
+                // Station 3: 포장
+                if (progress > 75 && progress < 100) {
+                    st3Text.textContent = "로봇 암 실링 포장 중";
+                    st3Text.className = "text-xs font-bold text-purple-400";
+                    st3Icon.className = "fa-solid fa-box-open animate-bounce text-purple-400";
+                } else if (progress >= 100) {
+                    st3Text.textContent = "포장 및 출고 완료";
+                    st3Text.className = "text-xs font-bold text-emerald-400";
+                    st3Icon.className = "fa-solid fa-circle-check text-emerald-400";
+                } else {
+                    st3Text.textContent = "대기 중";
+                    st3Text.className = "text-xs font-bold text-gray-300";
+                    st3Icon.className = "fa-solid fa-circle-notch text-gray-600";
+                }
+            }
+
+            // Buttons Actions
+            document.getElementById('sim-new-order').addEventListener('click', () => {
+                const sampleMenus = ["치즈 제육덮밥", "해물 볶음우동", "우삼겹 된장찌개", "수제 돈까스 도시락"];
+                const newId = `ORD-${Math.floor(100 + Math.random() * 900)}`;
+                const randomMenu = sampleMenus[Math.floor(Math.random() * sampleMenus.length)];
+                
+                pendingOrders.push({ id: newId, name: randomMenu, status: "대기 중", time: "방금 전" });
+                renderOrders();
+                addLog(`새 주문 수신 완료: [${newId}] ${randomMenu}`, "info");
+            });
+
+            document.getElementById('sim-start-cook').addEventListener('click', () => {
+                if (isCooking) {
+                    addLog("이미 다른 조리가 진행 중입니다.", "warn");
+                    return;
+                }
+                if (pendingOrders.length === 0) {
+                    addLog("대기 중인 주문이 없습니다. 새 주문을 추가하세요.", "warn");
+                    return;
+                }
+
+                activeOrder = pendingOrders.shift();
+                renderOrders();
+
+                isCooking = true;
+                currentProgress = 10;
+                currentTaskName.textContent = `[${activeOrder.id}] ${activeOrder.name}`;
+                taskStatusBadge.textContent = "COOKING_IN_PROGRESS";
+                taskStatusBadge.className = "px-3 py-1 rounded-full text-xs font-bold bg-amber-950 text-amber-400 border border-amber-800 animate-pulse";
+
+                overallProgressBar.style.width = `${currentProgress}%`;
+                overallProgressText.textContent = `${currentProgress}%`;
+                updateStationsUI(currentProgress);
+
+                addLog(`조리 개시: ${activeOrder.name} (재료 투입 시작)`, "success");
+
+                // Progress simulation timer
+                const interval = setInterval(() => {
+                    if (currentProgress < 75) {
+                        currentProgress += 15;
+                        overallProgressBar.style.width = `${currentProgress}%`;
+                        overallProgressText.textContent = `${currentProgress}%`;
+                        updateStationsUI(currentProgress);
+
+                        if (currentProgress === 40) {
+                            addLog(`AI 온도 제어 가동: 220°C 도달 완료`, "info");
+                        }
+                    } else {
+                        clearInterval(interval);
+                        addLog(`조리 완료! 로봇 암 포장 대기 중...`, "purple");
+                    }
+                }, 800);
+            });
+
+            document.getElementById('sim-pack-order').addEventListener('click', () => {
+                if (!activeOrder || currentProgress < 75) {
+                    addLog("포장 가능한 조리 완료 상태가 아닙니다.", "warn");
+                    return;
+                }
+
+                currentProgress = 100;
+                overallProgressBar.style.width = `100%`;
+                overallProgressText.textContent = `100%`;
+                updateStationsUI(100);
+
+                taskStatusBadge.textContent = "PACKAGING_COMPLETED";
+                taskStatusBadge.className = "px-3 py-1 rounded-full text-xs font-bold bg-emerald-950 text-emerald-400 border border-emerald-800";
+
+                addLog(`[${activeOrder.id}] 열밀봉 포장 완료 & 라이더 픽업대 이송 완료!`, "success");
+
+                setTimeout(() => {
+                    isCooking = false;
+                    activeOrder = null;
+                    currentTaskName.textContent = "진행 중인 주문이 없습니다.";
+                    taskStatusBadge.textContent = "WAIT_FOR_ORDER";
+                    taskStatusBadge.className = "px-3 py-1 rounded-full text-xs font-bold bg-gray-800 text-gray-400";
+                    overallProgressBar.style.width = `0%`;
+                    overallProgressText.textContent = `0%`;
+                    updateStationsUI(0);
+                }, 3000);
+            });
+
+            document.getElementById('sim-reset').addEventListener('click', () => {
+                pendingOrders = [...initialOrders];
+                activeOrder = null;
+                currentProgress = 0;
+                isCooking = false;
+                renderOrders();
+                currentTaskName.textContent = "진행 중인 주문이 없습니다.";
+                taskStatusBadge.textContent = "WAIT_FOR_ORDER";
+                taskStatusBadge.className = "px-3 py-1 rounded-full text-xs font-bold bg-gray-800 text-gray-400";
+                overallProgressBar.style.width = `0%`;
+                overallProgressText.textContent = `0%`;
+                updateStationsUI(0);
+                systemLogs.innerHTML = '';
+                addLog("시뮬레이션 시스템이 초기화되었습니다.", "info");
+            });
+
+            // Initialize
+            renderOrders();
+            addLog("스마트키친 AI 관제 서버 연결 성공.", "success");
+            addLog("로봇 암 포장 모듈 준비 완료 (ONLINE).", "info");
+
+            // ==========================================
+            // 4. ROI Calculator Logic
+            // ==========================================
+            const ordersSlider = document.getElementById('orders-slider');
+            const staffSlider = document.getElementById('staff-slider');
+            const ordersDisplay = document.getElementById('orders-display');
+            const staffDisplay = document.getElementById('staff-display');
+            const savingsMonthly = document.getElementById('savings-monthly');
+            const savingsYearly = document.getElementById('savings-yearly');
+
+            function calculateROI() {
+                const orders = parseInt(ordersSlider.value);
+                const staff = parseInt(staffSlider.value);
+
+                ordersDisplay.textContent = `${orders.toLocaleString()} 건`;
+                staffDisplay.textContent = `${staff} 명`;
+
+                // Calculate estimated savings logic
+                // Average monthly staff cost = 2.8 million KRW per staff
+                // Reduced staff = Math.max(1, staff - 1)
+                const savedStaffCount = Math.max(1, Math.floor(staff * 0.6));
+                const monthlySavingsVal = savedStaffCount * 230 + Math.floor(orders * 0.05); // Labor + loss reduction
+                const yearlySavingsVal = monthlySavingsVal * 12;
+
+                savingsMonthly.textContent = `${monthlySavingsVal.toLocaleString()} 만원`;
+                savingsYearly.textContent = `${yearlySavingsVal.toLocaleString()} 만원 / 년`;
+            }
+
+            ordersSlider.addEventListener('input', calculateROI);
+            staffSlider.addEventListener('input', calculateROI);
+            calculateROI();
+
+            // ==========================================
+            // 5. Contact Form Submission Modal Simulation
+            // ==========================================
+            const contactForm = document.getElementById('contact-form');
+            const modalAlert = document.getElementById('modal-alert');
+            const modalCloseBtn = document.getElementById('modal-close-btn');
+
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                modalAlert.classList.remove('hidden');
+            });
+
+            modalCloseBtn.addEventListener('click', () => {
+                modalAlert.classList.add('hidden');
+                contactForm.reset();
+            });
+        });
+    </script>
+</body>
+</html>
